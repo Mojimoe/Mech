@@ -88,19 +88,24 @@ void AMechCharacter::Tick(float DeltaTime)
 void AMechCharacter::Jump()
 {
 	Super::Jump();
+
+	if (CanJump())
+	{
+		if (Role < ROLE_Authority)
+		{
+			ServerSpawnJumpEffects();
+		}
+		else
+		{
+			MulticastSpawnJumpEffects();
+		}
+	}
 }
 
 void AMechCharacter::OnJumped_Implementation()
 {
-	if (Role < ROLE_Authority)
-	{
-		ServerSpawnJumpEffects(); // This runs on the server, so this should never play, but let's be safe.
-	}
-	else
-	{
-		MulticastSpawnJumpEffects();
-		MECH_LOG("Ping!");
-	}
+	Super::OnJumped_Implementation();
+	//MulticastSpawnJumpEffects();
 }
 
 bool AMechCharacter::CanJumpInternal_Implementation() const

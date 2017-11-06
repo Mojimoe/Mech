@@ -107,6 +107,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Replicated, Category = "Mech|Assets|Particles")
 		UParticleSystem* AssetJumpParticle;
 
+	/// Pointer to the particle template for jumping.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Replicated, Category = "Mech|Assets|Particles")
+		UParticleSystem* AssetDeathParticle;
+
 	// NETWORKED PROPS
 
 	/// Current health of the Pawn
