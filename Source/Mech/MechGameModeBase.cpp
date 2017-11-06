@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MechGameModeBase.h"
+#include "MechPlayerController.h"
 
 void AMechGameModeBase::NotifyAboutKill(AController* Killer, AController* KilledPlayer, APawn* KilledPawn, const UDamageType* DamageType)
 {
@@ -20,4 +21,26 @@ void AMechGameModeBase::NotifyAboutKill(AController* Killer, AController* Killed
 		VictimPlayerState->BroadcastDeath(KillerPlayerState, DamageType, VictimPlayerState);
 	}
 	*/
+}
+
+void AMechGameModeBase::ServerPostChatMessage_Implementation(const FString& ChatMessage)
+{
+	MulticastPostChatMessage(ChatMessage);
+}
+
+bool AMechGameModeBase::ServerPostChatMessage_Validate(const FString& ChatMessage)
+{
+	return true;
+}
+
+void AMechGameModeBase::MulticastPostChatMessage_Implementation(const FString& ChatMessage)
+{
+	for (FConstControllerIterator It = GetWorld()->GetControllerIterator(); It; ++It)
+	{
+		AMechPlayerController* PC = Cast<AMechPlayerController>(*It);
+		if (PC)
+		{
+			PC->OnMessage(ChatMessage);
+		}
+	}
 }

@@ -165,7 +165,7 @@ void AMechPlayerState::BroadcastDeath_Implementation(class AMechPlayerState* Kil
 		AMechPlayerController* TestPC = Cast<AMechPlayerController>(*It);
 		if (TestPC && TestPC->IsLocalController())
 		{
-			TestPC->OnDeathMessage(KillerPlayerState, this, KillerDamageType);
+			TestPC->OnKillMessage(KillerPlayerState, this, KillerDamageType);
 		}
 	}
 }

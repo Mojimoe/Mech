@@ -71,6 +71,10 @@ public:
 	// NETWORK METHODS
 
 	/// Tells the server to multicast out a jump effect.
+	UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSendPing();
+
+	/// Tells the server to multicast out a jump effect.
 	UFUNCTION(Server, Unreliable, WithValidation)
 		void ServerSpawnJumpEffects();
 

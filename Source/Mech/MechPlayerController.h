@@ -20,5 +20,8 @@ public:
 	void OnKill();
 
 	/// notify local client about deaths
-	void OnDeathMessage(class AMechPlayerState* KillerPlayerState, class AMechPlayerState* KilledPlayerState, const UDamageType* KillerDamageType);
+	void OnMessage(const FString& Message);
+	
+	/// Post a message about a kill.
+	void OnKillMessage(class AMechPlayerState* KillerPlayerState, class AMechPlayerState* KilledPlayerState, const UDamageType* KillerDamageType);
 };

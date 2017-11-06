@@ -2,6 +2,7 @@
 
 #include "MechCharacter.h"
 #include "MechCharacterMovementComponent.h"
+#include "MechGameModeBase.h"
 #include "Components/SkeletalMeshComponent.h"
 
 // Sets default values
@@ -194,7 +195,8 @@ void AMechCharacter::StopSprinting()
 
 void AMechCharacter::DoDebugMethod()
 {
-	SetThirdPersonMode(!bIsInThirdPerson); // Toggle third person
+	//SetThirdPersonMode(!bIsInThirdPerson); // Toggle third person
+	ServerSendPing();
 }
 
 void AMechCharacter::HandleMovementInput()
@@ -264,6 +266,25 @@ void AMechCharacter::HandleCameraInput()
 	AddControllerYawInput(LookYawMouse);
 }
 
+void AMechCharacter::ServerSendPing_Implementation()
+{
+	if (Role < ROLE_Authority)
+	{
+		return;
+	}
+
+	AMechGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AMechGameModeBase>();
+	if (GameMode)
+	{
+		GameMode->MulticastPostChatMessage("Player Pinged.");
+	}
+}
+
+bool AMechCharacter::ServerSendPing_Validate()
+{
+	return true;
+}
+
 void AMechCharacter::ServerSpawnJumpEffects_Implementation()
 {
 	MulticastSpawnJumpEffects();
@@ -324,8 +345,8 @@ bool AMechCharacter::Die(float KillingDamage, struct FDamageEvent const& DamageE
 	UDamageType const* const DamageType = DamageEvent.DamageTypeClass ? DamageEvent.DamageTypeClass->GetDefaultObject<UDamageType>() : GetDefault<UDamageType>();
 	Killer = GetDamageInstigator(Killer, *DamageType);
 
-	//AController* const KilledPlayer = (Controller != NULL) ? Controller : Cast<AController>(GetOwner());
-	//GetWorld()->GetAuthGameMode<AShooterGameMode>()->Killed(Killer, KilledPlayer, this, DamageType);
+	AController* const KilledPlayer = (Controller != NULL) ? Controller : Cast<AController>(GetOwner());
+	GetWorld()->GetAuthGameMode<AMechGameModeBase>()->NotifyAboutKill(Killer, KilledPlayer, this, DamageType);
 
 	UCharacterMovementComponent* CharMove = GetCharacterMovement();
 	if (CharMove)
