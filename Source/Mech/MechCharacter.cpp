@@ -21,18 +21,18 @@ AMechCharacter::AMechCharacter(const FObjectInitializer& ObjectInitializer)
 
 	CameraComponent3P = CreateDefaultSubobject<UCameraComponent>(FName("CameraComponent3P"));
 	CameraComponent3P->SetupAttachment(SpringArmComponent);
-	CameraComponent3P->bAutoActivate = true;
+	CameraComponent3P->bAutoActivate = false;
 
 	CameraComponent1P = CreateDefaultSubobject<UCameraComponent>(FName("CameraComponent1P"));
 	CameraComponent1P->SetupAttachment(RootComponent);
 	CameraComponent1P->bUsePawnControlRotation = true;
-	CameraComponent1P->bAutoActivate = false;
+	CameraComponent1P->bAutoActivate = true;
 
 	// Initialize Inherited Components
 	USkeletalMeshComponent* SkelMesh = GetMesh();
 	if (SkelMesh)
 	{
-		SkelMesh->bOwnerNoSee = false;
+		SkelMesh->bOwnerNoSee = true;
 	}
 
 	UMovementComponent* MoveComp = GetMovementComponent();
@@ -59,7 +59,7 @@ AMechCharacter::AMechCharacter(const FObjectInitializer& ObjectInitializer)
 
 	// Init Vars
 	bIsDying = false;
-	bIsInThirdPerson = true;
+	bIsInThirdPerson = false;
 }
 
 // Called when the game starts or when spawned
@@ -195,8 +195,8 @@ void AMechCharacter::StopSprinting()
 
 void AMechCharacter::DoDebugMethod()
 {
-	//SetThirdPersonMode(!bIsInThirdPerson); // Toggle third person
-	ServerSendPing();
+	SetThirdPersonMode(!bIsInThirdPerson); // Toggle third person
+	//ServerSendPing();
 }
 
 void AMechCharacter::HandleMovementInput()
@@ -422,14 +422,14 @@ void AMechCharacter::SetThirdPersonMode(bool bNewThirdPerson)
 
 	if (bNewThirdPerson)
 	{
-		if (CameraComponent3P) CameraComponent3P->Activate(true);
-		if (CameraComponent1P) CameraComponent1P->Activate(false);
-		if (GetMesh()) GetMesh()->bOwnerNoSee = false;
+		if (CameraComponent1P) CameraComponent1P->Deactivate();
+		if (CameraComponent1P) CameraComponent3P->Activate();
+		if (GetMesh()) GetMesh()->SetOwnerNoSee(false);
 	}
 	else 
 	{
-		if (CameraComponent1P) CameraComponent1P->Activate(true);
-		if (CameraComponent1P) CameraComponent3P->Activate(true);
-		if (GetMesh()) GetMesh()->bOwnerNoSee = true;
+		if (CameraComponent3P) CameraComponent3P->Deactivate();
+		if (CameraComponent1P) CameraComponent1P->Activate();
+		if (GetMesh()) GetMesh()->SetOwnerNoSee(true);
 	}
 }
