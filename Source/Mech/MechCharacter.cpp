@@ -276,7 +276,7 @@ void AMechCharacter::ServerSendPing_Implementation()
 	AMechGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AMechGameModeBase>();
 	if (GameMode)
 	{
-		GameMode->MulticastPostChatMessage("Player Pinged.");
+		GameMode->PostChatMessage("Player Pinged.");
 	}
 }
 

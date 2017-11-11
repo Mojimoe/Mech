@@ -23,17 +23,7 @@ void AMechGameModeBase::NotifyAboutKill(AController* Killer, AController* Killed
 	*/
 }
 
-void AMechGameModeBase::ServerPostChatMessage_Implementation(const FString& ChatMessage)
-{
-	MulticastPostChatMessage(ChatMessage);
-}
-
-bool AMechGameModeBase::ServerPostChatMessage_Validate(const FString& ChatMessage)
-{
-	return true;
-}
-
-void AMechGameModeBase::MulticastPostChatMessage_Implementation(const FString& ChatMessage)
+void AMechGameModeBase::PostChatMessage(const FString& ChatMessage)
 {
 	for (FConstControllerIterator It = GetWorld()->GetControllerIterator(); It; ++It)
 	{

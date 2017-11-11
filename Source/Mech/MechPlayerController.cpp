@@ -10,6 +10,13 @@ void AMechPlayerController::OnKill()
 
 void AMechPlayerController::OnMessage(const FString& Message)
 {
+	// This is called on the server.
+	
+	ClientHUDMessage(Message);
+}
+
+void AMechPlayerController::ClientHUDMessage_Implementation(const FString& Message)
+{
 	AHUD* HUD = GetHUD();
 	if (HUD)
 	{
@@ -19,7 +26,6 @@ void AMechPlayerController::OnMessage(const FString& Message)
 			MechHUD->ShowMessage(Message);
 		}
 	}
-	
 }
 
 void AMechPlayerController::OnKillMessage(class AMechPlayerState* KillerPlayerState, class AMechPlayerState* KilledPlayerState, const UDamageType* KillerDamageType)
