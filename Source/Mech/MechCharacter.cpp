@@ -60,6 +60,7 @@ AMechCharacter::AMechCharacter(const FObjectInitializer& ObjectInitializer)
 	// Init Vars
 	bIsDying = false;
 	bIsInThirdPerson = false;
+	DynamicAppear = 0.0f;
 }
 
 // Called when the game starts or when spawned
@@ -67,6 +68,7 @@ void AMechCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	BuildDynamicMaterialInstances();
 }
 
 // Called every frame
@@ -78,7 +80,9 @@ void AMechCharacter::Tick(float DeltaTime)
 
 	HandleCameraInput();
 
-	DynamicAppear = FMath::Min(1.0f, DynamicAppear + DeltaTime);
+	DynamicAppear = FMath::Min(1.0f, DynamicAppear + DeltaTime*2.0f);
+
+	UpdateDynamicMaterialParameters();
 
 	if (Role == ROLE_Authority)
 	{
