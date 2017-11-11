@@ -105,6 +105,12 @@ public:
 	/// set third person
 	void SetThirdPersonMode(bool bInThirdPerson);
 
+	/// Build dynamic Materials instances, for effect manipulation. This should run at begin play.
+	void BuildDynamicMaterialInstances();
+
+	/// Update per-tick dynamic material values from their associated variables.
+	void UpdateDynamicMaterialParameters();
+
 	// ASSET REFERENCE
 
 	/// Pointer to the particle template for jumping.
@@ -120,8 +126,6 @@ public:
 	/// Current health of the Pawn
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "Mech|Health")
 		float Health;
-
-
 
 	// TUNING PROPS
 
@@ -168,4 +172,13 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mech|Components")
 		UCameraComponent* CameraComponent1P;
+
+protected:
+
+	// ** CODE ONLY VARS ** //
+
+	TArray<UMaterialInstanceDynamic*> DynamicMaterialInstances;
+
+	/// Variable that drives material properties
+	float DynamicAppear = 0.0f;
 };

@@ -11,5 +11,6 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 #define MECH_LOG(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, TEXT(x));}

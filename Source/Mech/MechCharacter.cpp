@@ -78,6 +78,8 @@ void AMechCharacter::Tick(float DeltaTime)
 
 	HandleCameraInput();
 
+	DynamicAppear = FMath::Min(1.0f, DynamicAppear + DeltaTime);
+
 	if (Role == ROLE_Authority)
 	{
 		FRotator ControlRot = GetControlRotation();
@@ -162,7 +164,7 @@ void AMechCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction(FName("Jump"), IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction(FName("Sprint"), IE_Pressed, this, &AMechCharacter::StartSprinting);
-	PlayerInputComponent->BindAction(FName("Dodge"), IE_Pressed, this, &AMechCharacter::Dodge);
+	//PlayerInputComponent->BindAction(FName("Dodge"), IE_Pressed, this, &AMechCharacter::Dodge);
 	PlayerInputComponent->BindAction(FName("Debug"), IE_Pressed, this, &AMechCharacter::DoDebugMethod);
 }
 
@@ -431,5 +433,31 @@ void AMechCharacter::SetThirdPersonMode(bool bNewThirdPerson)
 		if (CameraComponent3P) CameraComponent3P->Deactivate();
 		if (CameraComponent1P) CameraComponent1P->Activate();
 		if (GetMesh()) GetMesh()->SetOwnerNoSee(true);
+	}
+}
+
+void AMechCharacter::BuildDynamicMaterialInstances()
+{
+	USkeletalMeshComponent* SkelMesh = GetMesh();
+	if (SkelMesh)
+	{
+		uint32 NumMaterials = SkelMesh->GetNumMaterials();
+
+		for (uint32 i = 0; i < NumMaterials; i++)
+		{
+			DynamicMaterialInstances.Add(GetMesh()->CreateAndSetMaterialInstanceDynamic(i));
+		}
+	}
+}
+
+void AMechCharacter::UpdateDynamicMaterialParameters()
+{
+	for (int32 i = 0; i < DynamicMaterialInstances.Num(); ++i)
+	{
+		UMaterialInstanceDynamic* Instance = DynamicMaterialInstances[i];
+		if (Instance)
+		{
+			Instance->SetScalarParameterValue(FName("Appear"), DynamicAppear);
+		}
 	}
 }
